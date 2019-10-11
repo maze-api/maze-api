@@ -1,7 +1,6 @@
 const request = require('../request');
 const { dropCollection } = require('../db');
 const { signupUser } = require('../data-helpers');
-const jwt = require('jsonwebtoken');
 
 describe('Auth API', () => {
   beforeEach(() => dropCollection('users'));
@@ -11,40 +10,40 @@ describe('Auth API', () => {
     password: 'abc'
   };
 
-  let token;
-  
-  
+  let api_key;
   beforeEach(() => {
     return signupUser()
       .then(user => {
-        token = user.token;
+        
+        api_key = user.api_key;
+        console.log(api_key);
       });
   });
 
 
-  it('verifies a good token', () => {
-    return request
-      .get('/api/auth/verify')
-      .set('Authorization', token)
-      .expect(200);
-  });
+  // it('verifies a good token', () => {
+  //   return request
+  //     .get('/api/auth/verify')
+  //     .set('Authorization', token)
+  //     .expect(200);
+  // });
 
-  it('verifies a bad token', () => {
-    return request
-      .get('/api/auth/verify')
-      .set('Authorization', jwt.sign({ foo: 'bar' }, 'shhh'))
-      .expect(401);
-  });
+  // it('verifies a bad token', () => {
+  //   return request
+  //     .get('/api/auth/verify')
+  //     .set('Authorization', jwt.sign({ foo: 'bar' }, 'shhh'))
+  //     .expect(401);
+  // });
 
 
   it('signs up a user', () => {
-    expect(token).toBeDefined;
+    expect(api_key).toBeDefined;
   });
 
 
 
-  function testBadSignup(testName, user) {
-    it(testName, () => {
+  function testBadSignin(testName, user) {
+    it.skip(testName, () => {
       return request
         .post('/api/auth/signin')
         .send(user)
@@ -56,12 +55,12 @@ describe('Auth API', () => {
   }
 
 
-  testBadSignup('rejects bad password', {
+  testBadSignin('rejects bad password', {
     email: 'me@me.com',
     password: 'bad'
   });
 
-  testBadSignup('rejects invalid email', {
+  testBadSignin('rejects invalid email', {
     email: 'bad@email.com',
     password: testUser.password
   });
@@ -76,13 +75,12 @@ describe('Auth API', () => {
       })
       .expect(400)
       .then(({ body }) => {
-        expect(body.error).toBe('Email already in use');
+        expect(body.error).toBe('Email already in use, please use PUT api/users/refreshKey to get a new key');
       });
   });
 
 
-  
-  it('signs in a user', () => {
+  it.skip('signs in a user', () => {
     return request
       .post('/api/auth/signin')
       .send(testUser)
@@ -93,7 +91,7 @@ describe('Auth API', () => {
   });
 
   function testEmailAndPasswordRequired(route, testProperty, user) {
-    it(`${route} requires ${testProperty}`, () => {
+    it.skip(`${route} requires ${testProperty}`, () => {
       return request
         .post(`/api/auth/${route}`)
         .send(user)
@@ -109,7 +107,6 @@ describe('Auth API', () => {
 
   testEmailAndPasswordRequired('signin', 'email', { password: 'I no like emails' });
   testEmailAndPasswordRequired('signin', 'password', { email: 'no@password.com' });
-
 
 
 });

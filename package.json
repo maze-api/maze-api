@@ -34,7 +34,6 @@
     "jest": "^24.9.0",
     "nodemon": "^1.19.2",
     "prettier": "^1.18.2",
-    "supertest": "^4.0.2"
   },
   "jest": {
     "preset": "@shelf/jest-mongodb",

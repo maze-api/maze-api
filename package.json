@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "jest": "jest --runInBand",
+    "jest": "jest",
     "test": "npm run jest",
     "test:coverage": "npm run test -- --coverage",
     "test:watch": "npm run jest -- --watchAll",
@@ -34,6 +34,7 @@
     "jest": "^24.9.0",
     "nodemon": "^1.19.2",
     "prettier": "^1.18.2",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "preset": "@shelf/jest-mongodb",

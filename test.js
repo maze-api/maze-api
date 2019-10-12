@@ -12,5 +12,5 @@ console.log(maze.printCells());
 maze = new HexMaze(20, 20);
 console.log(maze.printCells());
 
-// maze = new HexMaze(40, 40);
-// console.log(maze.printCells());
+maze = new HexMaze(40, 40);
+console.log(maze.printCells());

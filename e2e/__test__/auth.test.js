@@ -3,47 +3,30 @@ const { dropCollection } = require('../db');
 const { signupUser } = require('../data-helpers');
 
 describe('Auth API', () => {
-  beforeEach(() => dropCollection('users'));
 
   const testUser = {
     email: 'me@me.com',
     password: 'abc'
   };
 
+  beforeEach(() => dropCollection('users'));
+
   let api_key;
   beforeEach(() => {
     return signupUser()
       .then(user => {
-        
-        api_key = user.api_key;
-        console.log(api_key);
+        api_key = user.key;
       });
   });
 
-
-  // it('verifies a good token', () => {
-  //   return request
-  //     .get('/api/auth/verify')
-  //     .set('Authorization', token)
-  //     .expect(200);
-  // });
-
-  // it('verifies a bad token', () => {
-  //   return request
-  //     .get('/api/auth/verify')
-  //     .set('Authorization', jwt.sign({ foo: 'bar' }, 'shhh'))
-  //     .expect(401);
-  // });
-
-
+  
   it('signs up a user', () => {
     expect(api_key).toBeDefined;
   });
 
 
-
   function testBadSignin(testName, user) {
-    it.skip(testName, () => {
+    it(testName, () => {
       return request
         .post('/api/auth/signin')
         .send(user)
@@ -80,18 +63,18 @@ describe('Auth API', () => {
   });
 
 
-  it.skip('signs in a user', () => {
+  it('signs in a user', () => {
     return request
       .post('/api/auth/signin')
       .send(testUser)
       .expect(200)
       .then(({ body }) => {
-        expect(body.token).toBeDefined();
+        expect(body.key).toBeDefined();
       });
   });
 
   function testEmailAndPasswordRequired(route, testProperty, user) {
-    it.skip(`${route} requires ${testProperty}`, () => {
+    it(`${route} requires ${testProperty}`, () => {
       return request
         .post(`/api/auth/${route}`)
         .send(user)

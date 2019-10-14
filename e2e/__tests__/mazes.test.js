@@ -2,7 +2,7 @@ const request = require('../request');
 const db = require('../db');
 
 describe('Mazes', () => {
-  const maze1 = {
+  const validMazeOne = {
     topologyName: 'Rectangular',
     algorithm: 'Recursive Back Tracker',
     dimensions: { height: 2, width: 2 },
@@ -37,104 +37,96 @@ describe('Mazes', () => {
     ]
   };
 
-  //#region
-  // const maze2 = {
-  //   topologyName: 'Rectangle',
-  //   algorithm: 'Recursive Back Tracker',
-  //   dimensions: { height: 2, width: 2 },
-  //   difficulty: 'Easier',
-  //   connectivity: 12,
-  //   averagePathLength: 3,
-  //   solutionLength: 12,
-  //   cellStructureKey: {
-  //     coordinates: {
-  //       x: 'a positive integer',
-  //       y: 'a positive integer'
-  //     },
-  //     exits: 'A maximum of four and minimum of one coordinate sets.'
-  //   },
-  //   start: { x: 1, y: 1 },
-  //   end: { x: 4, y: 4 },
-  //   solution: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
-  //   cellMap: [
-  //     [
-  //       {
-  //         coordinates: { x: 1, y: 1 },
-  //         exits: [{ x: 1, y: 2 }]
-  //       },
-  //       {
-  //         coordinates: { x: 1, y: 2 },
-  //         exits: [{ x: 1, y: 2 }]
-  //       }
-  //     ],
-  //     [
-  //       {
-  //         coordinates: { x: 1, y: 3 },
-  //         exits: [{ x: 1, y: 2 }]
-  //       },
-  //       {
-  //         coordinates: { x: 1, y: 4 },
-  //         exits: [{ x: 1, y: 2 }]
-  //       }
-  //     ]
-  //   ]
-  // };
+  const validMazeTwo = {
+    topologyName: 'Triangular',
+    algorithm: 'Recursive Back Tracker',
+    dimensions: { height: 2, width: 2 },
+    difficulty: 'Average',
+    connectivity: 12,
+    averagePathLength: 3,
+    solutionLength: 12,
+    start: { x: 1, y: 1 },
+    end: { x: 4, y: 4 },
+    solutionPath: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
+    cellMap: [
+      [
+        {
+          coordinates: { x: 1, y: 1 },
+          exits: [{ x: 1, y: 2 }]
+        },
+        {
+          coordinates: { x: 1, y: 2 },
+          exits: [{ x: 1, y: 2 }]
+        }
+      ],
+      [
+        {
+          coordinates: { x: 1, y: 3 },
+          exits: [{ x: 1, y: 2 }]
+        },
+        {
+          coordinates: { x: 1, y: 4 },
+          exits: [{ x: 1, y: 2 }]
+        }
+      ]
+    ]
+  };
 
-  // const maze3 = {
-  //   topologyName: 'Rectangle',
-  //   algorithm: 'Recursive Back Tracker',
-  //   dimensions: { height: 2, width: 2 },
-  //   difficulty: 'Easier',
-  //   connectivity: 12,
-  //   averagePathLength: 3,
-  //   solutionLength: 12,
-  //   cellStructureKey: {
-  //     coordinates: {
-  //       x: 'a positive integer',
-  //       y: 'a positive integer'
-  //     },
-  //     exits: 'A maximum of four and minimum of one coordinate sets.'
-  //   },
-  //   start: { x: 1, y: 1 },
-  //   end: { x: 4, y: 4 },
-  //   solution: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
-  //   cellMap: [
-  //     [
-  //       {
-  //         coordinates: { x: 1, y: 1 },
-  //         exits: [{ x: 1, y: 2 }]
+  const validMazeThree = {
+    topologyName: 'Hexagonal',
+    algorithm: 'Recursive Back Tracker',
+    dimensions: { height: 2, width: 2 },
+    difficulty: 'Harder',
+    connectivity: 12,
+    averagePathLength: 3,
+    solutionLength: 12,
+    start: { x: 1, y: 1 },
+    end: { x: 4, y: 4 },
+    solutionPath: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
+    cellMap: [
+      [
+        {
+          coordinates: { x: 1, y: 1 },
+          exits: [{ x: 1, y: 2 }]
 
-  //       },
-  //       {
-  //         coordinates: { x: 1, y: 2 },
-  //         exits: [{ x: 1, y: 2 }]
-  //       }
-  //     ],
-  //     [
-  //       {
-  //         coordinates: { x: 1, y: 3 },
-  //         exits: [{ x: 1, y: 2 }]
-  //       },
-  //       {
-  //         coordinates: { x: 1, y: 4 },
-  //         exits: [{ x: 1, y: 2 }]
-  //       }
-  //     ]
-  //   ]
-  // };
+        },
+        {
+          coordinates: { x: 1, y: 2 },
+          exits: [{ x: 1, y: 2 }]
+        }
+      ],
+      [
+        {
+          coordinates: { x: 1, y: 3 },
+          exits: [{ x: 1, y: 2 }]
+        },
+        {
+          coordinates: { x: 1, y: 4 },
+          exits: [{ x: 1, y: 2 }]
+        }
+      ]
+    ]
+  };
 
-  //#endregion
 
   beforeEach(() => {
     return db.dropCollection('mazes');
   });
 
-  it('can post a single maze', () => {
+  function postMaze(maze) {
     return request
       .post('/api/mazes')
-      .send(maze1)
+      .send(maze)
       .expect(200)
       .then(({ body }) => {
+        return body;
+      });
+  }
+
+
+  it('can post a single valid maze', () => {
+    return postMaze(validMazeOne)
+      .then(body => {
         expect(body.cellMap[0][0].coordinates).toEqual({ x: 1, y: 1 });
         expect(body.cellMap[0][1].coordinates).toEqual({ x: 1, y: 2 });
         expect(body.cellMap[1][0].coordinates).toEqual({ x: 1, y: 3 });
@@ -154,7 +146,7 @@ describe('Mazes', () => {
         });
         expect(body).toMatchInlineSnapshot(
           {
-            ...maze1,
+            ...validMazeOne,
             _id: expect.any(String),
             __v: 0,
             cellMap: expect.any(Array),
@@ -183,6 +175,90 @@ describe('Mazes', () => {
           }
         `
         );
+      });
+  });
+
+
+  it('errors on invalid maze input', () => {
+
+    return request
+      .post('/api/mazes')
+      .send({})
+      .expect(400);
+
+  });
+
+  it('get mazes returns list of mazes', () => {
+    return Promise.all([
+      postMaze(validMazeOne),
+      postMaze(validMazeTwo),
+      postMaze(validMazeThree),
+    ])
+      .then(() => {
+        return request
+          .get('/api/mazes')
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body.length).toBe(3);
+            expect(body[0].difficulty).toBe('Easier');
+            expect(body[1].difficulty).toBe('Average');
+            expect(body[2].difficulty).toBe('Harder');
+
+          });
+
+      });
+
+  });
+  it('get mazes with query for topologyName', () => {
+
+    return Promise.all([
+      postMaze(validMazeOne),
+      postMaze(validMazeTwo),
+      postMaze(validMazeThree),
+    ])
+      .then(() => {
+        return request
+          .get(`/api/mazes?topologyName=Rectangular`)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body[0].topologyName).toBe('Rectangular');
+          });
+      });
+  });
+
+  it('get mazes with query for difficulty', () => {
+
+    return Promise.all([
+      postMaze(validMazeOne),
+      postMaze(validMazeTwo),
+      postMaze(validMazeThree),
+    ])
+      .then(() => {
+        return request
+          .get(`/api/mazes?difficulty=Average`)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body[0].difficulty).toBe('Average');
+          });
+      });
+  });
+
+  it('get mazes with two queries', () => {
+
+    return Promise.all([
+      postMaze(validMazeOne),
+      postMaze(validMazeTwo),
+      postMaze(validMazeThree),
+    ])
+      .then(() => {
+        return request
+          .get(`/api/mazes?difficulty=Average&topologyName=Triangular`)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body[0].difficulty).toBe('Average');
+            expect(body[0].topologyName).toBe('Triangular');
+          });
       });
   });
 });

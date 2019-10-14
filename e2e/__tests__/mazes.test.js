@@ -199,7 +199,6 @@ describe('Mazes', () => {
           .get('/api/mazes')
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body.length).toBe(3);
             expect(body[0].difficulty).toBe('Easier');
             expect(body[1].difficulty).toBe('Average');
@@ -210,6 +209,7 @@ describe('Mazes', () => {
       });
 
   });
+
   it('get mazes with query for topologyName', () => {
 
     return Promise.all([
@@ -230,7 +230,6 @@ describe('Mazes', () => {
           .get(`/api/mazes?topologyName=Rectangular`)
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body[0].topologyName).toBe('Rectangular');
           });
       });
@@ -318,5 +317,46 @@ describe('Mazes', () => {
       });
   });
 
+  it('gets a maze by id', () => {
+    return postMaze(validMazeOne).then(savedMaze => {
+      return request
+        .get(`/api/mazes/${savedMaze._id}`)
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          expect(body).toMatchInlineSnapshot(
+            {
+              ...validMazeOne,
+              _id: expect.any(String),
+              __v: 0,
+              cellMap: expect.any(Array),
+              start: expect.any(Object),
+              end: expect.any(Object),
+              solutionPath: expect.any(Array)
+            },
+            `
+            Object {
+              "__v": 0,
+              "_id": Any<String>,
+              "algorithm": "Recursive Back Tracker",
+              "averagePathLength": 3,
+              "cellMap": Any<Array>,
+              "connectivity": 12,
+              "difficulty": "Easier",
+              "dimensions": Object {
+                "height": 2,
+                "width": 2,
+              },
+              "end": Any<Object>,
+              "solutionLength": 12,
+              "solutionPath": Any<Array>,
+              "start": Any<Object>,
+              "topologyName": "Rectangular",
+            }
+          `
+          );
+        });
+    });
+  });
 
 });

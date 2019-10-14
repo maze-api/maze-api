@@ -216,12 +216,21 @@ describe('Mazes', () => {
       postMaze(validMazeOne),
       postMaze(validMazeTwo),
       postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
     ])
       .then(() => {
         return request
           .get(`/api/mazes?topologyName=Rectangular`)
           .expect(200)
           .then(({ body }) => {
+            console.log(body);
             expect(body[0].topologyName).toBe('Rectangular');
           });
       });
@@ -261,4 +270,53 @@ describe('Mazes', () => {
           });
       });
   });
+
+  it('get 10 mazes with query', () => {
+
+    return Promise.all([
+      postMaze(validMazeOne),
+      postMaze(validMazeTwo),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+      postMaze(validMazeThree),
+    ])
+      .then(() => {
+        return request
+          .get(`/api/mazes?difficulty=Harder&topologyName=Hexagonal`)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.length).toBe(10);
+            expect(body[0].difficulty).toBe('Harder');
+            expect(body[0].topologyName).toBe('Hexagonal');
+            expect(body[1].difficulty).toBe('Harder');
+            expect(body[1].topologyName).toBe('Hexagonal');
+            expect(body[2].difficulty).toBe('Harder');
+            expect(body[2].topologyName).toBe('Hexagonal');
+            expect(body[3].difficulty).toBe('Harder');
+            expect(body[3].topologyName).toBe('Hexagonal');
+            expect(body[4].difficulty).toBe('Harder');
+            expect(body[4].topologyName).toBe('Hexagonal');
+            expect(body[5].difficulty).toBe('Harder');
+            expect(body[5].topologyName).toBe('Hexagonal');
+            expect(body[6].difficulty).toBe('Harder');
+            expect(body[6].topologyName).toBe('Hexagonal');
+            expect(body[7].difficulty).toBe('Harder');
+            expect(body[7].topologyName).toBe('Hexagonal');
+            expect(body[8].difficulty).toBe('Harder');
+            expect(body[8].topologyName).toBe('Hexagonal');
+            expect(body[9].difficulty).toBe('Harder');
+            expect(body[9].topologyName).toBe('Hexagonal');
+          });
+      });
+  });
+
+
 });

@@ -1,7 +1,21 @@
 const request = require('../request');
 const db = require('../db');
+const { signupUser } = require('../data-helpers');
 
 describe('Mazes', () => {
+  const testUser = {
+    email: 'me@me.com',
+    password: 'abc'
+  };
+
+  let testUserKey;
+
+  beforeEach(() => {
+    return signupUser(testUser).then(user => {
+      testUserKey = user.key;
+    });
+  });
+
   const validMazeOne = {
     topologyName: 'Rectangular',
     algorithm: 'Recursive Back Tracker',
@@ -113,9 +127,13 @@ describe('Mazes', () => {
     return db.dropCollection('mazes');
   });
 
+  beforeEach(() => db.dropCollection('users'));
+  beforeEach(() => db.dropCollection('keys'));
+
   function postMaze(maze) {
     return request
       .post('/api/mazes')
+      .set('Authorization', testUserKey)
       .send(maze)
       .expect(200)
       .then(({ body }) => {
@@ -183,6 +201,7 @@ describe('Mazes', () => {
 
     return request
       .post('/api/mazes')
+      .set('Authorization', testUserKey)
       .send({})
       .expect(400);
 
@@ -197,6 +216,7 @@ describe('Mazes', () => {
       .then(() => {
         return request
           .get('/api/mazes')
+          .set('Authorization', testUserKey)
           .expect(200)
           .then(({ body }) => {
             expect(body.length).toBe(3);
@@ -228,6 +248,7 @@ describe('Mazes', () => {
       .then(() => {
         return request
           .get(`/api/mazes?topologyName=Rectangular`)
+          .set('Authorization', testUserKey)
           .expect(200)
           .then(({ body }) => {
             expect(body[0].topologyName).toBe('Rectangular');
@@ -245,6 +266,7 @@ describe('Mazes', () => {
       .then(() => {
         return request
           .get(`/api/mazes?difficulty=Average`)
+          .set('Authorization', testUserKey)
           .expect(200)
           .then(({ body }) => {
             expect(body[0].difficulty).toBe('Average');
@@ -262,6 +284,7 @@ describe('Mazes', () => {
       .then(() => {
         return request
           .get(`/api/mazes?difficulty=Average&topologyName=Triangular`)
+          .set('Authorization', testUserKey)
           .expect(200)
           .then(({ body }) => {
             expect(body[0].difficulty).toBe('Average');
@@ -290,6 +313,7 @@ describe('Mazes', () => {
       .then(() => {
         return request
           .get(`/api/mazes?difficulty=Harder&topologyName=Hexagonal`)
+          .set('Authorization', testUserKey)
           .expect(200)
           .then(({ body }) => {
             expect(body.length).toBe(10);
@@ -321,9 +345,9 @@ describe('Mazes', () => {
     return postMaze(validMazeOne).then(savedMaze => {
       return request
         .get(`/api/mazes/${savedMaze._id}`)
+        .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body).toMatchInlineSnapshot(
             {
               ...validMazeOne,

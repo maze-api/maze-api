@@ -9,9 +9,8 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "jest": "jest --runInBand --verbose",
+    "jest": "jest --runInBand",
     "test": "npm run jest -- --coverage",
-    "test:coverage": "npm run test -- --coverage",
     "test:watch": "npm run jest -- --watchAll",
     "test:verbose": "npm run test -- --verbose",
     "start": "node server.js",
@@ -30,6 +29,7 @@
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.1.1",
+    "@types/jest": "^24.0.18",
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
     "nodemon": "^1.19.2",

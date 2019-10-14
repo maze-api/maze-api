@@ -9,7 +9,6 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-
     "jest": "jest --runInBand --verbose",
     "test": "npm run jest -- --coverage",
     "test:coverage": "npm run test -- --coverage",

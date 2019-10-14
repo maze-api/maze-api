@@ -10,9 +10,10 @@
     "lint": "eslint .",
     "pretest": "npm run lint",
     "jest": "jest --runInBand",
-    "test": "npm run jest -- --coverage",
+    "test": "npm run jest -- --verbose --coverage",
     "test:watch": "npm run jest -- --watchAll",
     "test:verbose": "npm run test -- --verbose",
+    "test:coverage": "npm run test -- --coverage",
     "start": "node server.js",
     "start:watch": "nodemon server.js"
   },

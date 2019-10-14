@@ -2,7 +2,7 @@ const request = require('../request');
 const { dropCollection } = require('../db');
 const { signupUser } = require('../data-helpers');
 const User = require('../../lib/models/user');
-const Key = require('../../lib/models/key-model');
+const Key = require('../../lib/models/key');
 
 describe('Auth API', () => {
 

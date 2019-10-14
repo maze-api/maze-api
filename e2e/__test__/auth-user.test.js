@@ -4,14 +4,20 @@ const { signupUser } = require('../data-helpers');
 const User = require('../../lib/models/user');
 
 describe('Auth-User API', () => {
-  beforeEach(() => dropCollection('users'));
-
+  
+  const testUser = {
+    email: 'me@me.com',
+    password: 'abc'
+  };
+  
   const testAdmin = {
     email: 'admin@admin.com',
     password: 'abc'
   };
-
-  let testAdminToken;
+  
+  beforeEach(() => dropCollection('users'));
+  beforeEach(() => dropCollection('keys'));
+  
   let testUserId;
 
   beforeEach(() => {
@@ -27,17 +33,9 @@ describe('Auth-User API', () => {
         return request
           .post('/api/auth/signin')
           .send(testAdmin)
-          .expect(200)
-          .then(({ body }) => {
-            testAdminToken = body.token;
-          });
+          .expect(200);
       });
   });
-
-  const testUser = {
-    email: 'me@me.com',
-    password: 'abc'
-  };
 
   beforeEach(() => {
     return signupUser(testUser).then(user => {
@@ -48,7 +46,6 @@ describe('Auth-User API', () => {
   it('puts a role into user', () => {
     return request
       .put(`/api/auth/users/${testUserId}/roles/bottom-dweller`)
-      .set('Authorization', testAdminToken)
       .expect(200)
       .then(({ body }) => {
         expect(body).toMatchInlineSnapshot(
@@ -75,12 +72,10 @@ describe('Auth-User API', () => {
   it('deletes a user role', () => {
     return request
       .put(`/api/auth/users/${testUserId}/roles/bottom-dweller`)
-      .set('Authorization', testAdminToken)
       .expect(200)
       .then(() => {
         return request
           .delete(`/api/auth/users/${testUserId}/roles/bottom-dweller`)
-          .set('Authorization', testAdminToken)
           .expect(200)
           .then(({ body }) => {
             expect(body).toMatchInlineSnapshot(
@@ -106,7 +101,6 @@ describe('Auth-User API', () => {
   it('gets all users and returns email and roles', () => {
     return request
       .get('/api/auth/users')
-      .set('Authorization', testAdminToken)
       .expect(200)
       .then(({ body }) => {
         expect(body.length).toBe(2);

@@ -17,9 +17,9 @@ let maze;
 
 // console.log(maze.solutionPathFromEndCoords(longestMaxXEdgeCellSolution.x, longestMaxXEdgeCellSolution.y));
 
-maze = new HexMaze(3, 3);
+maze = new HexMaze(3, 3, 1, 1);
 console.log(maze.printCells());
-console.log(maze.cells);
+console.log(maze.exportMazeModel());
 
 // maze = new HexMaze(8, 8);
 // console.log(maze.printCells());

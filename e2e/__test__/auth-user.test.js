@@ -160,4 +160,14 @@ describe('Auth-User API', () => {
         );
       });
   });
+
+  it('it does not allow a user without a key to use route', ()=> {
+    return request
+      .delete(`/api/auth/users/${testUserId}`)
+      .expect(401)
+      .then(({ body }) => {
+        expect(body.error).toBe('No Key Found');
+      });
+  });
+
 });

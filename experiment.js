@@ -1,4 +1,5 @@
-const { HexMaze } = require('./lib/maze-classes/HexMaze');
+// const { HexMaze } = require('./lib/maze-classes/HexMaze');
+const { SquareMaze } = require('./lib/maze-classes/SquareMaze');
 let maze;
 
 // maze = new HexMaze(30, 20);
@@ -22,8 +23,12 @@ const options = {
   startX: 1,
   startY: 1
 };
-maze = new HexMaze(options);
+maze = new SquareMaze(options);
 console.log(maze.exportMazeModel());
+const sqaureMaze = maze.exportMazeModel();
+console.log(sqaureMaze.cellMap[0].coordinates);
+console.log(sqaureMaze.cellMap[0].exits);
+
 
 // maze = new HexMaze(8, 8);
 // console.log(maze.printCells());

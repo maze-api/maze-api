@@ -23,18 +23,12 @@ const options = {
   startY: 1,
   topology: 'Hexagon'
 };
+
 const maze = new HexMaze(options);
+console.log(maze.printCells());
+
 const maze2 = new SquareMaze(options);
-
-console.log(maze.exportMazeModel());
-const sqaureMaze = maze.exportMazeModel();
-console.log(sqaureMaze.cellMap[0].coordinates);
-console.log(sqaureMaze.cellMap[0].exits);
-
-console.log(maze2.exportMazeModel());
-const otherMaze = maze2.exportMazeModel();
-console.log(otherMaze.cellMap[0].coordinates);
-console.log(otherMaze.cellMap[0].exits);
+console.log(maze2.printCells());
 
 
 // maze = new HexMaze(8, 8);

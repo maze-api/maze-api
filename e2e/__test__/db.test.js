@@ -10,6 +10,8 @@ jest.mock('mongoose', () => {
 });
 
 
+
+
 describe('db', () => {
   it('if no collection found, it will throw an error', () => {
     return dropCollection().catch(error => {

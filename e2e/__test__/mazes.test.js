@@ -1,7 +1,8 @@
 const request = require('../request');
 const db = require('../db');
 const { signupUser } = require('../data-helpers');
-const { validMazeOne, validMazeTwo, validMazeThree } = require('../../data/validMazes');
+// const { validMazeOne, validMazeTwo, validMazeThree } = require('../../data/validMazes');
+const { validHexOptions } = require('../../data/validMazeOptions');
 
 describe('Mazes', () => {
   const testUser = {
@@ -25,37 +26,20 @@ describe('Mazes', () => {
     ]);
   });
 
-  function postMaze(maze) {
+  function postMaze(options) {
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)
-      .send(maze)
+      .send(options)
       .expect(200)
       .then(({ body }) => {
         return body;
       });
   }
 
-  it('can post a single valid maze', () => {
-    return postMaze(validMazeOne)
+  it.only('can post a single valid maze', () => {
+    return postMaze(validHexOptions)
       .then(body => {
-        expect(body.cellMap[0][0].coordinates).toEqual({ x: 1, y: 1 });
-        expect(body.cellMap[0][1].coordinates).toEqual({ x: 1, y: 2 });
-        expect(body.cellMap[1][0].coordinates).toEqual({ x: 1, y: 3 });
-        expect(body.cellMap[1][1].coordinates).toEqual({ x: 1, y: 4 });
-        expect(body.dimensions).toEqual({ height: 2, width: 2 });
-        expect(body.start).toEqual({ x: 1, y: 1 });
-        expect(body.end).toEqual({ x: 4, y: 4 });
-        expect(body.solutionPath[0]).toEqual({
-          _id: expect.any(String),
-          x: 1,
-          y: 1
-        });
-        expect(body.solutionPath[1]).toEqual({
-          _id: expect.any(String),
-          x: 1,
-          y: 2
-        });
         expect(body).toMatchInlineSnapshot(
           {
             ...validMazeOne,

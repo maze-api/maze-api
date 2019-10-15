@@ -1,6 +1,7 @@
 const request = require('../request');
 const db = require('../db');
 const { signupUser } = require('../data-helpers');
+const { validMazeOne, validMazeTwo, validMazeThree } = require('../../data/validMazes');
 
 describe('Mazes', () => {
   const testUser = {
@@ -16,119 +17,13 @@ describe('Mazes', () => {
     });
   });
 
-  const validMazeOne = {
-    topologyName: 'Rectangular',
-    algorithm: 'Recursive Back Tracker',
-    dimensions: { height: 2, width: 2 },
-    difficulty: 'Easier',
-    connectivity: 12,
-    averagePathLength: 3,
-    solutionLength: 12,
-    start: { x: 1, y: 1 },
-    end: { x: 4, y: 4 },
-    solutionPath: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
-    cellMap: [
-      [
-        {
-          coordinates: { x: 1, y: 1 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 2 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ],
-      [
-        {
-          coordinates: { x: 1, y: 3 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 4 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ]
-    ]
-  };
-
-  const validMazeTwo = {
-    topologyName: 'Triangular',
-    algorithm: 'Recursive Back Tracker',
-    dimensions: { height: 2, width: 2 },
-    difficulty: 'Average',
-    connectivity: 12,
-    averagePathLength: 3,
-    solutionLength: 12,
-    start: { x: 1, y: 1 },
-    end: { x: 4, y: 4 },
-    solutionPath: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
-    cellMap: [
-      [
-        {
-          coordinates: { x: 1, y: 1 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 2 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ],
-      [
-        {
-          coordinates: { x: 1, y: 3 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 4 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ]
-    ]
-  };
-
-  const validMazeThree = {
-    topologyName: 'Hexagonal',
-    algorithm: 'Recursive Back Tracker',
-    dimensions: { height: 2, width: 2 },
-    difficulty: 'Harder',
-    connectivity: 12,
-    averagePathLength: 3,
-    solutionLength: 12,
-    start: { x: 1, y: 1 },
-    end: { x: 4, y: 4 },
-    solutionPath: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
-    cellMap: [
-      [
-        {
-          coordinates: { x: 1, y: 1 },
-          exits: [{ x: 1, y: 2 }]
-
-        },
-        {
-          coordinates: { x: 1, y: 2 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ],
-      [
-        {
-          coordinates: { x: 1, y: 3 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 4 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ]
-    ]
-  };
-
-
   beforeEach(() => {
-    return db.dropCollection('mazes');
+    return Promise.all([
+      db.dropCollection('mazes'),
+      db.dropCollection('users'),
+      db.dropCollection('keys')
+    ]);
   });
-
-  beforeEach(() => db.dropCollection('users'));
-  beforeEach(() => db.dropCollection('keys'));
 
   function postMaze(maze) {
     return request
@@ -140,7 +35,6 @@ describe('Mazes', () => {
         return body;
       });
   }
-
 
   it('can post a single valid maze', () => {
     return postMaze(validMazeOne)

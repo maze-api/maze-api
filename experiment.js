@@ -17,8 +17,8 @@ const { SquareMaze } = require('./lib/maze-classes/SquareMaze');
 
 // console.log(maze.solutionPathFromEndCoords(longestMaxXEdgeCellSolution.x, longestMaxXEdgeCellSolution.y));
 const options = {
-  width: 3,
-  height: 3,
+  width: 4,
+  height: 4,
   startX: 1,
   startY: 1,
   topology: 'Hexagon'
@@ -27,14 +27,24 @@ const maze = new HexMaze(options);
 const maze2 = new SquareMaze(options);
 
 console.log(maze.exportMazeModel());
-const sqaureMaze = maze.exportMazeModel();
-console.log(sqaureMaze.cellMap[0].coordinates);
-console.log(sqaureMaze.cellMap[0].exits);
+const squareMaze = maze.exportMazeModel();
+console.log(squareMaze.cellMap[0]);
+console.log(squareMaze.cellMap[1]);
+console.log(squareMaze.cellMap[2]);
+console.log(squareMaze.cellMap[3]);
+console.log(squareMaze.cellMap[4]);
+console.log(squareMaze.cellMap[5]);
+console.log(squareMaze.cellMap[6]);
+console.log(squareMaze.cellMap[7]);
+console.log(squareMaze.cellMap[8]);
+console.log(squareMaze.cellMap[9]);
+console.log(squareMaze.cellMap[10]);
+console.log(squareMaze.cellMap[11]);
+console.log(squareMaze.cellMap[12]);
+console.log(squareMaze.cellMap[13]);
+console.log(squareMaze.cellMap[14]);
+console.log(squareMaze.cellMap[15]);
 
-console.log(maze2.exportMazeModel());
-const otherMaze = maze2.exportMazeModel();
-console.log(otherMaze.cellMap[0].coordinates);
-console.log(otherMaze.cellMap[0].exits);
 
 
 // maze = new HexMaze(8, 8);

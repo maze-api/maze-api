@@ -1,4 +1,4 @@
-const { HexMaze } = require('./lib/algorithms/hexagonalRecursiveBacktracker/Maze');
+const { HexMaze } = require('./lib/maze-classes/HexMaze');
 let maze;
 
 // maze = new HexMaze(30, 20);
@@ -16,9 +16,13 @@ let maze;
 // console.log(maze.printCells());
 
 // console.log(maze.solutionPathFromEndCoords(longestMaxXEdgeCellSolution.x, longestMaxXEdgeCellSolution.y));
-
-maze = new HexMaze(3, 3, 1, 1);
-console.log(maze.printCells());
+const options = {
+  width: 3,
+  height: 3,
+  startX: 1,
+  startY: 1
+};
+maze = new HexMaze(options);
 console.log(maze.exportMazeModel());
 
 // maze = new HexMaze(8, 8);

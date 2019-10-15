@@ -1,8 +1,8 @@
 const request = require('../request');
 const connect = require('../../lib/connect');
 const MONGODB_URI = global.__MONGO_URI__;
-const mongoose = require('mongoose');
 const { dropCollection } = require('../db');
+const mongoose = require('mongoose');
 
 
 describe('connect.js', () => {
@@ -24,6 +24,9 @@ describe('connect.js', () => {
           .then(({ body }) => body);
       });
   });
+
+
+
 
   it('closes processes on SIGINT', (done) => {
     let killProcess;

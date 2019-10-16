@@ -17,8 +17,8 @@ const { SquaresMaze } = require('./lib/maze-classes/SquaresMaze');
 
 // console.log(maze.solutionPathFromEndCoords(longestMaxXEdgeCellSolution.x, longestMaxXEdgeCellSolution.y));
 const options = {
-  width: 20,
-  height: 20,
+  width: 8,
+  height: 8,
   startX: 1,
   startY: 1,
   endX: 15,

@@ -1,6 +1,5 @@
 const request = require('../request');
 const db = require('../db');
-const HexesMaze = require('../../lib/maze-classes/HexesMaze');
 const { signupUser } = require('../data-helpers');
 const {
   validHexOptions,

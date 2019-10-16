@@ -1,10 +1,14 @@
 const request = require('../request');
 const db = require('../db');
+const HexesMaze = require('../../lib/maze-classes/HexesMaze');
 const { signupUser } = require('../data-helpers');
 const {
   validHexOptions,
-  validSquareOptions
-} = require('../../data/validMazeOptions');
+  validSquareOptions,
+  invalidEndCoordOptions,
+  invalidEndPointOptions,
+  castErrorOptions
+} = require('../../data/mazeOptions');
 
 describe('Mazes', () => {
   beforeEach(() => {
@@ -132,7 +136,7 @@ describe('Mazes', () => {
     });
   });
 
-  it.only('get mazes with query for solutionLength', () => {
+  it('get mazes with query for solutionLength and connectivity with operators', () => {
     return Promise.all([
       postMaze(validHexOptions),
       postMaze(validHexOptions),
@@ -143,71 +147,55 @@ describe('Mazes', () => {
         .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body[0].solutionLength).toBeGreaterThan(1);
         });
     });
   });
 
-  it('get mazes with two queries', () => {
+  it('get 10 mazes with query by default', () => {
     return Promise.all([
-      postMaze(validMazeOne),
-      postMaze(validMazeTwo),
-      postMaze(validMazeThree)
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions)
     ]).then(() => {
       return request
-        .get(`/api/mazes?difficulty=Average&topologyName=Triangular`)
-        .set('Authorization', testUserKey)
-        .expect(200)
-        .then(({ body }) => {
-          expect(body[0].difficulty).toBe('Average');
-          expect(body[0].topologyName).toBe('Triangular');
-        });
-    });
-  });
-
-  it('get 10 mazes with query', () => {
-    return Promise.all([
-      postMaze(validMazeOne),
-      postMaze(validMazeTwo),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree)
-    ]).then(() => {
-      return request
-        .get(`/api/mazes?difficulty=Harder&topologyName=Hexagonal`)
+        .get(`/api/mazes`)
         .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {
           expect(body.length).toBe(10);
-          expect(body[0].difficulty).toBe('Harder');
-          expect(body[0].topologyName).toBe('Hexagonal');
-          expect(body[1].difficulty).toBe('Harder');
-          expect(body[1].topologyName).toBe('Hexagonal');
-          expect(body[2].difficulty).toBe('Harder');
-          expect(body[2].topologyName).toBe('Hexagonal');
-          expect(body[3].difficulty).toBe('Harder');
-          expect(body[3].topologyName).toBe('Hexagonal');
-          expect(body[4].difficulty).toBe('Harder');
-          expect(body[4].topologyName).toBe('Hexagonal');
-          expect(body[5].difficulty).toBe('Harder');
-          expect(body[5].topologyName).toBe('Hexagonal');
-          expect(body[6].difficulty).toBe('Harder');
-          expect(body[6].topologyName).toBe('Hexagonal');
-          expect(body[7].difficulty).toBe('Harder');
-          expect(body[7].topologyName).toBe('Hexagonal');
-          expect(body[8].difficulty).toBe('Harder');
-          expect(body[8].topologyName).toBe('Hexagonal');
-          expect(body[9].difficulty).toBe('Harder');
-          expect(body[9].topologyName).toBe('Hexagonal');
+        });
+    });
+  });
+
+  it('gets 5 mazes with query.number', () => {
+    return Promise.all([
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes?number=5`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.length).toBe(5);
         });
     });
   });
@@ -254,4 +242,38 @@ describe('Mazes', () => {
         });
     });
   });
+
+  it('throws an error when giving incomplete end coordinates', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(invalidEndCoordOptions)
+      .expect(500)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
+
+  it('throws an error when given end coordinates larger than maze', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(invalidEndPointOptions)
+      .expect(500)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
+
+  it('throws an error when given end coordinates larger than maze', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(castErrorOptions)
+      .expect(400)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
+
 });

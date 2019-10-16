@@ -2,20 +2,27 @@ const { HexesMaze } = require('./lib/maze-classes/HexesMaze');
 const { SquaresMaze } = require('./lib/maze-classes/SquaresMaze');
 
 const options = {
-  width: 20,
-  height: 20,
+  width: 10,
+  height: 10,
   startX: 1,
   startY: 1,
-  endX: 15,
-  endY: 17,
-  cellShape: 'Hexagon',
+  endX: 5,
+  endY: 7,
 };
 // options.algorithm = 'Recursive Backtracker';
 options.algorithm = 'Woven';
+const showSolution = 1;
+const showDistances = 1;
 
-// const maze = new HexesMaze(options);
+let maze;
+
+maze = new SquaresMaze(options);
+console.log(maze.exportMazeModel().averagePathLength);
+console.log(maze.exportMazeModel().averageWrongPathLength);
+console.log(maze.exportMazeModel().solutionLength);
+console.log(maze.printCells(showSolution, showDistances));
+console.log(maze.printCells(showSolution, 0));
+
+// maze = new HexesMaze(options);
 // console.log(maze.printCells());
 
-const maze2 = new SquaresMaze(options);
-const showSolution = 1;
-console.log(maze2.printCells(showSolution));

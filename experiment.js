@@ -17,14 +17,11 @@ const { SquaresMaze } = require('./lib/maze-classes/SquaresMaze');
 
 // console.log(maze.solutionPathFromEndCoords(longestMaxXEdgeCellSolution.x, longestMaxXEdgeCellSolution.y));
 const options = {
-  width: 5,
-  height: 4,
+  width: 3,
+  height: 3,
   startX: 1,
   startY: 1,
-  endX: 3,
-  endY: 3,
-  cellShape: 'Hexagon',
-  algorithm: 'Recursive Backtracker'
+  algorithm: 'Growing Tree'
 };
 
 const maze = new HexesMaze(options);

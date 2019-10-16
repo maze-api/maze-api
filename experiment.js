@@ -17,21 +17,23 @@ const { SquaresMaze } = require('./lib/maze-classes/SquaresMaze');
 
 // console.log(maze.solutionPathFromEndCoords(longestMaxXEdgeCellSolution.x, longestMaxXEdgeCellSolution.y));
 const options = {
-  width: 3,
-  height: 3,
+  width: 10,
+  height: 10,
   startX: 1,
   startY: 1,
-  algorithm: 'Growing Tree'
+  // endX: 3,
+  // endY: 3,
+  cellShape: 'Squares',
+  algorithm: 'Prims'
 };
 
 const maze = new HexesMaze(options);
 console.log(maze.printCells());
 console.log(maze.exportMazeModel());
 
-const maze2 = new SquaresMaze(options);
-console.log(maze2.printCells());
-console.log(maze2.exportMazeModel());
-
+// const maze2 = new SquaresMaze(options);
+// console.log(maze2.printCells());
+// console.log(maze2.exportMazeModel());
 
 // maze = new HexMaze(8, 8);
 // console.log(maze.printCells());

@@ -21,8 +21,8 @@ const options = {
   height: 10,
   startX: 1,
   startY: 1,
-  // endX: 3,
-  // endY: 3,
+  endX: 3,
+  endY: 3,
   cellShape: 'Squares',
   algorithm: 'Prims'
 };

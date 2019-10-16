@@ -24,15 +24,15 @@ const options = {
   endX: 15,
   endY: 17,
   cellShape: 'Hexagon',
-  algorithm: 'Recursive Backtracker'
+  algorithm: 'Woven'
 };
 
 // const maze = new HexesMaze(options);
 // console.log(maze.printCells());
 
 const maze2 = new SquaresMaze(options);
+// console.log(maze2.printCells('show'));
 console.log(maze2.printCells());
-console.log(maze2.printCells('show'));
 
 
 // maze = new HexMaze(8, 8);

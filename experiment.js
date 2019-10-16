@@ -11,8 +11,6 @@ const options = {
 };
 // options.algorithm = 'Recursive Backtracker';
 options.algorithm = 'Woven';
-const showSolution = 1;
-const showDistances = 1;
 
 let maze;
 
@@ -20,8 +18,8 @@ maze = new SquaresMaze(options);
 console.log(maze.exportMazeModel().averagePathLength);
 console.log(maze.exportMazeModel().averageWrongPathLength);
 console.log(maze.exportMazeModel().solutionLength);
-console.log(maze.printCells(showSolution, showDistances));
-console.log(maze.printCells(showSolution, 0));
+console.log(maze.printCells());
+
 
 // maze = new HexesMaze(options);
 // console.log(maze.printCells());

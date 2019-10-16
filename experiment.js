@@ -27,13 +27,12 @@ const options = {
   algorithm: 'Recursive Backtracker'
 };
 
-const maze = new HexesMaze(options);
-console.log(maze.printCells());
-console.log(maze.exportMazeModel());
+// const maze = new HexesMaze(options);
+// console.log(maze.printCells());
 
 const maze2 = new SquaresMaze(options);
 console.log(maze2.printCells());
-console.log(maze2.exportMazeModel());
+console.log(maze2.printCells('show'));
 
 
 // maze = new HexMaze(8, 8);

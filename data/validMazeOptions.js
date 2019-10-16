@@ -1,9 +1,14 @@
 
 const validHexOptions = {
-  topologyName: 'Hexagonal',
-  algorithm: 'Recursive Back Tracker',
+  cellShape: 'Hexagonal',
+  algorithm: 'Recursive Backtracker',
   dimensions: { height: 3, width: 3 },
-  difficulty: 'Easier',
+  start: { x: 1, y: 1 },
+};
+const validSquareOptions = {
+  cellShape: 'Square',
+  algorithm: 'Recursive Backtracker',
+  dimensions: { height: 3, width: 3 },
   start: { x: 1, y: 1 },
 };
 

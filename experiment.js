@@ -17,12 +17,12 @@ const { SquaresMaze } = require('./lib/maze-classes/SquaresMaze');
 
 // console.log(maze.solutionPathFromEndCoords(longestMaxXEdgeCellSolution.x, longestMaxXEdgeCellSolution.y));
 const options = {
-  width: 20,
-  height: 20,
+  width: 5,
+  height: 4,
   startX: 1,
   startY: 1,
-  endX: 15,
-  endY: 17,
+  endX: 3,
+  endY: 3,
   cellShape: 'Hexagon',
   algorithm: 'Recursive Backtracker'
 };

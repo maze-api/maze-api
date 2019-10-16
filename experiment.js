@@ -23,13 +23,13 @@ const options = {
   startY: 1,
   endX: 3,
   endY: 3,
-  cellShape: 'Hexagon',
-  algorithm: 'Recursive Backtracker'
+  cellShape: 'Squares',
+  algorithm: 'Prims'
 };
 
-const maze = new HexesMaze(options);
-console.log(maze.printCells());
-console.log(maze.exportMazeModel());
+// const maze = new HexesMaze(options);
+// console.log(maze.printCells());
+// console.log(maze.exportMazeModel());
 
 const maze2 = new SquaresMaze(options);
 console.log(maze2.printCells());

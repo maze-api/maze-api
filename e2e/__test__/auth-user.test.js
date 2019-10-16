@@ -30,10 +30,14 @@ describe('Auth-User API', () => {
   });
 
   let testUserId;
+  let testUserKey;
+
   beforeEach(() => {
-    return signupUser(testUser).then(user => {
-      testUserId = user._id;
-    });
+    return signupUser(testUser)
+      .then(user => {
+        testUserId = user._id;
+        testUserKey = user.key;
+      });
   });
 
   it('puts a role into user', () => {
@@ -160,4 +164,24 @@ describe('Auth-User API', () => {
         );
       });
   });
+
+  it('does not allow a user without a key to use route', ()=> {
+    return request
+      .delete(`/api/auth/users/${testUserId}`)
+      .expect(401)
+      .then(({ body }) => {
+        expect(body.error).toBe('No Key Found');
+      });
+  });
+
+  it('does not allow a user without admin to use route', () => {
+    return request
+      .delete(`/api/auth/users/${testUserId}`)
+      .set('Authorization', testUserKey)
+      .expect(403)
+      .then(({ body }) => {
+        expect(body.error).toBe('User not authorized, must be "admin"');
+      });
+  });
+
 });

@@ -1,8 +1,23 @@
 const request = require('../request');
 const db = require('../db');
 const { signupUser } = require('../data-helpers');
+const {
+  validHexOptions,
+  validSquareOptions,
+  invalidEndCoordOptions,
+  invalidEndPointOptions,
+  castErrorOptions
+} = require('../../data/mazeOptions');
 
 describe('Mazes', () => {
+  beforeEach(() => {
+    return Promise.all([
+      db.dropCollection('mazes'),
+      db.dropCollection('users'),
+      db.dropCollection('keys')
+    ]);
+  });
+
   const testUser = {
     email: 'me@me.com',
     password: 'abc'
@@ -16,333 +31,176 @@ describe('Mazes', () => {
     });
   });
 
-  const validMazeOne = {
-    topologyName: 'Rectangular',
-    algorithm: 'Recursive Back Tracker',
-    dimensions: { height: 2, width: 2 },
-    difficulty: 'Easier',
-    connectivity: 12,
-    averagePathLength: 3,
-    solutionLength: 12,
-    start: { x: 1, y: 1 },
-    end: { x: 4, y: 4 },
-    solutionPath: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
-    cellMap: [
-      [
-        {
-          coordinates: { x: 1, y: 1 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 2 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ],
-      [
-        {
-          coordinates: { x: 1, y: 3 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 4 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ]
-    ]
-  };
-
-  const validMazeTwo = {
-    topologyName: 'Triangular',
-    algorithm: 'Recursive Back Tracker',
-    dimensions: { height: 2, width: 2 },
-    difficulty: 'Average',
-    connectivity: 12,
-    averagePathLength: 3,
-    solutionLength: 12,
-    start: { x: 1, y: 1 },
-    end: { x: 4, y: 4 },
-    solutionPath: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
-    cellMap: [
-      [
-        {
-          coordinates: { x: 1, y: 1 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 2 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ],
-      [
-        {
-          coordinates: { x: 1, y: 3 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 4 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ]
-    ]
-  };
-
-  const validMazeThree = {
-    topologyName: 'Hexagonal',
-    algorithm: 'Recursive Back Tracker',
-    dimensions: { height: 2, width: 2 },
-    difficulty: 'Harder',
-    connectivity: 12,
-    averagePathLength: 3,
-    solutionLength: 12,
-    start: { x: 1, y: 1 },
-    end: { x: 4, y: 4 },
-    solutionPath: [{ x: 1, y: 1 }, { x: 1, y: 2 }],
-    cellMap: [
-      [
-        {
-          coordinates: { x: 1, y: 1 },
-          exits: [{ x: 1, y: 2 }]
-
-        },
-        {
-          coordinates: { x: 1, y: 2 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ],
-      [
-        {
-          coordinates: { x: 1, y: 3 },
-          exits: [{ x: 1, y: 2 }]
-        },
-        {
-          coordinates: { x: 1, y: 4 },
-          exits: [{ x: 1, y: 2 }]
-        }
-      ]
-    ]
-  };
-
-
-  beforeEach(() => {
-    return db.dropCollection('mazes');
-  });
-
-  beforeEach(() => db.dropCollection('users'));
-  beforeEach(() => db.dropCollection('keys'));
-
-  function postMaze(maze) {
+  function postMaze(options) {
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)
-      .send(maze)
+      .send(options)
       .expect(200)
       .then(({ body }) => {
         return body;
       });
   }
 
-
   it('can post a single valid maze', () => {
-    return postMaze(validMazeOne)
-      .then(body => {
-        expect(body.cellMap[0][0].coordinates).toEqual({ x: 1, y: 1 });
-        expect(body.cellMap[0][1].coordinates).toEqual({ x: 1, y: 2 });
-        expect(body.cellMap[1][0].coordinates).toEqual({ x: 1, y: 3 });
-        expect(body.cellMap[1][1].coordinates).toEqual({ x: 1, y: 4 });
-        expect(body.dimensions).toEqual({ height: 2, width: 2 });
-        expect(body.start).toEqual({ x: 1, y: 1 });
-        expect(body.end).toEqual({ x: 4, y: 4 });
-        expect(body.solutionPath[0]).toEqual({
+    return postMaze(validHexOptions).then(body => {
+      expect(body).toMatchInlineSnapshot(
+        {
           _id: expect.any(String),
-          x: 1,
-          y: 1
-        });
-        expect(body.solutionPath[1]).toEqual({
-          _id: expect.any(String),
-          x: 1,
-          y: 2
-        });
-        expect(body).toMatchInlineSnapshot(
-          {
-            ...validMazeOne,
-            _id: expect.any(String),
-            __v: 0,
-            cellMap: expect.any(Array),
-            start: expect.any(Object),
-            end: expect.any(Object),
-            solutionPath: expect.any(Array)
-          },
-          `
-          Object {
-            "__v": 0,
-            "_id": Any<String>,
-            "algorithm": "Recursive Back Tracker",
-            "averagePathLength": 3,
-            "cellMap": Any<Array>,
-            "connectivity": 12,
-            "difficulty": "Easier",
-            "dimensions": Object {
-              "height": 2,
-              "width": 2,
-            },
-            "end": Any<Object>,
-            "solutionLength": 12,
-            "solutionPath": Any<Array>,
-            "start": Any<Object>,
-            "topologyName": "Rectangular",
-          }
+          __v: 0,
+          cellMap: expect.any(Array),
+          start: expect.any(Object),
+          end: expect.any(Object),
+          solutionPath: expect.any(Array),
+          connectivity: expect.any(Number),
+          averagePathLength: expect.any(Number),
+          solutionLength: expect.any(Number)
+        },
         `
-        );
-      });
+        Object {
+          "__v": 0,
+          "_id": Any<String>,
+          "algorithm": "Recursive Backtracker",
+          "averagePathLength": Any<Number>,
+          "cellMap": Any<Array>,
+          "cellShape": "Hexagonal",
+          "connectivity": Any<Number>,
+          "dimensions": Object {
+            "height": 3,
+            "width": 3,
+          },
+          "end": Any<Object>,
+          "solutionLength": Any<Number>,
+          "solutionPath": Any<Array>,
+          "start": Any<Object>,
+        }
+      `
+      );
+    });
   });
 
-
-  it('errors on invalid maze input', () => {
-
+  it('impossible to get an invalid maze', () => {
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)
       .send({})
-      .expect(400);
-
+      .expect(200);
   });
 
   it('get mazes returns list of mazes', () => {
+    const expectedDimensions = {
+      height: 3,
+      width: 3
+    };
+
     return Promise.all([
-      postMaze(validMazeOne),
-      postMaze(validMazeTwo),
-      postMaze(validMazeThree),
-    ])
-      .then(() => {
-        return request
-          .get('/api/mazes')
-          .set('Authorization', testUserKey)
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.length).toBe(3);
-            expect(body[0].difficulty).toBe('Easier');
-            expect(body[1].difficulty).toBe('Average');
-            expect(body[2].difficulty).toBe('Harder');
-
-          });
-
-      });
-
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions)
+    ]).then(() => {
+      return request
+        .get('/api/mazes')
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.length).toBe(3);
+          expect(body[0].dimensions).toStrictEqual(expectedDimensions);
+          expect(body[1].dimensions).toStrictEqual(expectedDimensions);
+          expect(body[2].dimensions).toStrictEqual(expectedDimensions);
+        });
+    });
   });
 
-  it('get mazes with query for topologyName', () => {
-
+  it('get mazes with query for cellShape', () => {
     return Promise.all([
-      postMaze(validMazeOne),
-      postMaze(validMazeTwo),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-    ])
-      .then(() => {
-        return request
-          .get(`/api/mazes?topologyName=Rectangular`)
-          .set('Authorization', testUserKey)
-          .expect(200)
-          .then(({ body }) => {
-            expect(body[0].topologyName).toBe('Rectangular');
-          });
-      });
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validSquareOptions),
+      postMaze(validSquareOptions),
+      postMaze(validSquareOptions),
+      postMaze(validSquareOptions),
+      postMaze(validSquareOptions),
+      postMaze(validSquareOptions)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes?cellShape=Square`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].cellShape).toBe('Square');
+        });
+    });
   });
 
-  it('get mazes with query for difficulty', () => {
-
+  it('get mazes with query for solutionLength and connectivity with operators', () => {
     return Promise.all([
-      postMaze(validMazeOne),
-      postMaze(validMazeTwo),
-      postMaze(validMazeThree),
-    ])
-      .then(() => {
-        return request
-          .get(`/api/mazes?difficulty=Average`)
-          .set('Authorization', testUserKey)
-          .expect(200)
-          .then(({ body }) => {
-            expect(body[0].difficulty).toBe('Average');
-          });
-      });
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes?solutionLength_lt=10&solutionLength_gt=1&connectivity_lt=1000`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].solutionLength).toBeGreaterThan(1);
+        });
+    });
   });
 
-  it('get mazes with two queries', () => {
-
+  it('get 10 mazes with query by default', () => {
     return Promise.all([
-      postMaze(validMazeOne),
-      postMaze(validMazeTwo),
-      postMaze(validMazeThree),
-    ])
-      .then(() => {
-        return request
-          .get(`/api/mazes?difficulty=Average&topologyName=Triangular`)
-          .set('Authorization', testUserKey)
-          .expect(200)
-          .then(({ body }) => {
-            expect(body[0].difficulty).toBe('Average');
-            expect(body[0].topologyName).toBe('Triangular');
-          });
-      });
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.length).toBe(10);
+        });
+    });
   });
 
-  it('get 10 mazes with query', () => {
-
+  it('gets 5 mazes with query.number', () => {
     return Promise.all([
-      postMaze(validMazeOne),
-      postMaze(validMazeTwo),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-      postMaze(validMazeThree),
-    ])
-      .then(() => {
-        return request
-          .get(`/api/mazes?difficulty=Harder&topologyName=Hexagonal`)
-          .set('Authorization', testUserKey)
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.length).toBe(10);
-            expect(body[0].difficulty).toBe('Harder');
-            expect(body[0].topologyName).toBe('Hexagonal');
-            expect(body[1].difficulty).toBe('Harder');
-            expect(body[1].topologyName).toBe('Hexagonal');
-            expect(body[2].difficulty).toBe('Harder');
-            expect(body[2].topologyName).toBe('Hexagonal');
-            expect(body[3].difficulty).toBe('Harder');
-            expect(body[3].topologyName).toBe('Hexagonal');
-            expect(body[4].difficulty).toBe('Harder');
-            expect(body[4].topologyName).toBe('Hexagonal');
-            expect(body[5].difficulty).toBe('Harder');
-            expect(body[5].topologyName).toBe('Hexagonal');
-            expect(body[6].difficulty).toBe('Harder');
-            expect(body[6].topologyName).toBe('Hexagonal');
-            expect(body[7].difficulty).toBe('Harder');
-            expect(body[7].topologyName).toBe('Hexagonal');
-            expect(body[8].difficulty).toBe('Harder');
-            expect(body[8].topologyName).toBe('Hexagonal');
-            expect(body[9].difficulty).toBe('Harder');
-            expect(body[9].topologyName).toBe('Hexagonal');
-          });
-      });
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validHexOptions)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes?number=5`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.length).toBe(5);
+        });
+    });
   });
 
   it('gets a maze by id', () => {
-    return postMaze(validMazeOne).then(savedMaze => {
+    return postMaze(validHexOptions).then(savedMaze => {
       return request
         .get(`/api/mazes/${savedMaze._id}`)
         .set('Authorization', testUserKey)
@@ -350,37 +208,71 @@ describe('Mazes', () => {
         .then(({ body }) => {
           expect(body).toMatchInlineSnapshot(
             {
-              ...validMazeOne,
               _id: expect.any(String),
               __v: 0,
               cellMap: expect.any(Array),
               start: expect.any(Object),
               end: expect.any(Object),
-              solutionPath: expect.any(Array)
+              solutionPath: expect.any(Array),
+              connectivity: expect.any(Number),
+              averagePathLength: expect.any(Number),
+              solutionLength: expect.any(Number)
             },
             `
             Object {
               "__v": 0,
               "_id": Any<String>,
-              "algorithm": "Recursive Back Tracker",
-              "averagePathLength": 3,
+              "algorithm": "Recursive Backtracker",
+              "averagePathLength": Any<Number>,
               "cellMap": Any<Array>,
-              "connectivity": 12,
-              "difficulty": "Easier",
+              "cellShape": "Hexagonal",
+              "connectivity": Any<Number>,
               "dimensions": Object {
-                "height": 2,
-                "width": 2,
+                "height": 3,
+                "width": 3,
               },
               "end": Any<Object>,
-              "solutionLength": 12,
+              "solutionLength": Any<Number>,
               "solutionPath": Any<Array>,
               "start": Any<Object>,
-              "topologyName": "Rectangular",
             }
           `
           );
         });
     });
+  });
+
+  it('throws an error when giving incomplete end coordinates', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(invalidEndCoordOptions)
+      .expect(500)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
+
+  it('throws an error when given end coordinates larger than maze', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(invalidEndPointOptions)
+      .expect(500)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
+
+  it('throws an error when given end coordinates larger than maze', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(castErrorOptions)
+      .expect(400)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
   });
 
 });

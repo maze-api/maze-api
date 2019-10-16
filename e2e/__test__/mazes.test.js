@@ -132,17 +132,18 @@ describe('Mazes', () => {
     });
   });
 
-  it('get mazes with query for solutionLength', () => {
+  it.only('get mazes with query for solutionLength', () => {
     return Promise.all([
       postMaze(validHexOptions),
       postMaze(validHexOptions),
       postMaze(validHexOptions)
     ]).then(() => {
       return request
-        .get(`/api/mazes?solutionLength=4&lt=true`)
+        .get(`/api/mazes?solutionLength_lt=10&solutionLength_gt=1&connectivity_lt=1000`)
         .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {
+          console.log(body);
           expect(body[0].solutionLength).toBeGreaterThan(1);
         });
     });

@@ -5,8 +5,12 @@ const {
   validHexOptions,
   validSquareOptions,
   validSquareOptions2,
+  tooSmallDimensionsOptions,
+  invalidStartPointOptions,
+  duplicateStartAndEndOptions,
   invalidEndCoordOptions,
   invalidEndPointOptions,
+  incompatibleAlgoAndCellShapeOptions,
   castErrorOptions
 } = require('../../data/mazeOptions');
 
@@ -80,7 +84,7 @@ describe('Mazes', () => {
     });
   });
 
-  it('impossible to get an invalid maze', () => {
+  it('gets a valid maze with default options if nothing is supplied', () => {
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)
@@ -88,7 +92,7 @@ describe('Mazes', () => {
       .expect(200);
   });
 
-  it('get mazes returns list of mazes', () => {
+  it('returns a list of mazes', () => {
     const expectedDimensions = {
       height: 3,
       width: 3
@@ -112,7 +116,7 @@ describe('Mazes', () => {
     });
   });
 
-  it('get mazes with query for cellShape', () => {
+  it('gets mazes from a query for "square" cellShapes', () => {
     return Promise.all([
       postMaze(validHexOptions),
       postMaze(validHexOptions),
@@ -136,7 +140,7 @@ describe('Mazes', () => {
     });
   });
 
-  it('get mazes with query for solutionLength and connectivity with operators', () => {
+  it('gets mazes from a query for solutionLength and connectivity', () => {
     return Promise.all([
       postMaze(validHexOptions),
       postMaze(validHexOptions),
@@ -152,7 +156,7 @@ describe('Mazes', () => {
     });
   });
 
-  it('get 10 mazes with query by default', () => {
+  it('gets 10 mazes from a default query - even when there are more mazes in the DB', () => {
     return Promise.all([
       postMaze(validHexOptions),
       postMaze(validHexOptions),
@@ -176,7 +180,7 @@ describe('Mazes', () => {
     });
   });
 
-  it('gets 5 mazes with query.number', () => {
+  it('gets 5 mazes from a query with number="5"', () => {
     return Promise.all([
       postMaze(validHexOptions),
       postMaze(validHexOptions),
@@ -242,8 +246,30 @@ describe('Mazes', () => {
         });
     });
   });
+  
+  it('throws an error when the provided start coordinates are larger than maze dimensions', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(invalidStartPointOptions)
+      .expect(500)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
 
-  it('throws an error when giving incomplete end coordinates', () => {
+  it('throws an error when the provided start and end coordinates are the same', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(duplicateStartAndEndOptions)
+      .expect(500)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
+
+  it('throws an error when the provided end coordinates are incomplete', () => {
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)
@@ -256,7 +282,7 @@ describe('Mazes', () => {
 
   it('throws an error when given end coordinates larger than maze', () => {
     return request
-      .post('/api/mazes')
+      .post('/api/mazes') 
       .set('Authorization', testUserKey)
       .send(invalidEndPointOptions)
       .expect(500)
@@ -265,7 +291,29 @@ describe('Mazes', () => {
       });
   });
 
-  it('throws an error when given end coordinates larger than maze', () => {
+  it('throws an error when given a "cellShape" that is incompatible with the "algorithm"', () => {
+    return request
+      .post('/api/mazes') 
+      .set('Authorization', testUserKey)
+      .send(incompatibleAlgoAndCellShapeOptions)
+      .expect(500)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
+
+  it('throws an error when the provided dimensions are too small', () => {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(tooSmallDimensionsOptions)
+      .expect(400)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
+      });
+  });
+
+  it('throws an error when given options in wrong data format', () => {
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)

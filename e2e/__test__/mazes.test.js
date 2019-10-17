@@ -197,7 +197,7 @@ describe('Mazes', () => {
       postMaze(validHexOptions3)
     ]).then(() => {
       return request
-        .get(`/api/mazes?algorithm=Growing+Tree`)
+        .get(`/api/mazes?algorithm=Growing+Tree&solutionLength_lt=100`)
         .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {

@@ -7,7 +7,7 @@ const {
   invalidEndCoordOptions,
   invalidEndPointOptions,
   castErrorOptions
-} = require('../../data/mazeOptions');
+} = require('../data/mazeOptions');
 
 describe('Mazes', () => {
   beforeEach(() => {

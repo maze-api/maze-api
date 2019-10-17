@@ -174,7 +174,7 @@ describe('Mazes', () => {
     });
   });
 
-  it.only('get mazes with query for Algorithm', () => {
+  it('get mazes with query for Algorithm', () => {
     return Promise.all([
       postMaze(validHexOptions3),
       postMaze(validHexOptions3),

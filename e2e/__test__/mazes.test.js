@@ -59,7 +59,8 @@ describe('Mazes', () => {
           solutionPath: expect.any(Array),
           connectivity: expect.any(Number),
           averagePathLength: expect.any(Number),
-          solutionLength: expect.any(Number)
+          solutionLength: expect.any(Number),
+          displayString: expect.any(String)
         },
         `
         Object {
@@ -74,6 +75,7 @@ describe('Mazes', () => {
             "height": 3,
             "width": 3,
           },
+          "displayString": Any<String>,
           "end": Any<Object>,
           "solutionLength": Any<Number>,
           "solutionPath": Any<Array>,
@@ -147,7 +149,9 @@ describe('Mazes', () => {
       postMaze(validHexOptions)
     ]).then(() => {
       return request
-        .get(`/api/mazes?solutionLength_lt=10&solutionLength_gt=1&connectivity_lt=1000`)
+        .get(
+          `/api/mazes?solutionLength_lt=10&solutionLength_gt=1&connectivity_lt=1000`
+        )
         .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {
@@ -221,7 +225,8 @@ describe('Mazes', () => {
               solutionPath: expect.any(Array),
               connectivity: expect.any(Number),
               averagePathLength: expect.any(Number),
-              solutionLength: expect.any(Number)
+              solutionLength: expect.any(Number),
+              displayString: expect.any(String)
             },
             `
             Object {
@@ -236,6 +241,7 @@ describe('Mazes', () => {
                 "height": 3,
                 "width": 3,
               },
+              "displayString": Any<String>,
               "end": Any<Object>,
               "solutionLength": Any<Number>,
               "solutionPath": Any<Array>,
@@ -246,7 +252,7 @@ describe('Mazes', () => {
         });
     });
   });
-  
+
   it('throws an error when the provided start coordinates are larger than maze dimensions', () => {
     return request
       .post('/api/mazes')
@@ -282,7 +288,7 @@ describe('Mazes', () => {
 
   it('throws an error when given end coordinates larger than maze', () => {
     return request
-      .post('/api/mazes') 
+      .post('/api/mazes')
       .set('Authorization', testUserKey)
       .send(invalidEndPointOptions)
       .expect(500)
@@ -293,7 +299,7 @@ describe('Mazes', () => {
 
   it('throws an error when given a "cellShape" that is incompatible with the "algorithm"', () => {
     return request
-      .post('/api/mazes') 
+      .post('/api/mazes')
       .set('Authorization', testUserKey)
       .send(incompatibleAlgoAndCellShapeOptions)
       .expect(500)
@@ -323,5 +329,4 @@ describe('Mazes', () => {
         expect(error).toBeDefined();
       });
   });
-
 });

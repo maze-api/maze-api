@@ -361,7 +361,7 @@ describe('Mazes', () => {
       .post('/api/mazes')
       .set('Authorization', testUserKey)
       .send(incompatibleAlgoAndCellShapeOptions)
-      .expect(400)
+      .expect(500)
       .then(({ error }) => {
         expect(error).toBeDefined();
       });

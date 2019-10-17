@@ -73,7 +73,7 @@ const invalidEndCoordOptions = {
   dimensions: { height: 3, width: 3 },
   start: { x: 1, y: 1 },
   end: { x: 1 }
-};  
+};
 
 const invalidEndPointOptions = {
   cellShape: 'Square',
@@ -81,15 +81,15 @@ const invalidEndPointOptions = {
   dimensions: { height: 3, width: 3 },
   start: { x: 1, y: 1 },
   end: { x: 1, y: 9 }
-};  
+};
 
 const incompatibleAlgoAndCellShapeOptions = {
   cellShape: 'Hexagonal',
-  algorithm: '  ',
+  algorithm: 'Woven',
   dimensions: { height: 3, width: 3 },
   start: { x: 1, y: 1 },
   end: { x: 1, y: 1 }
-};  
+};
 
 const castErrorOptions = {
   cellShape: 'Square',

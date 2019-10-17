@@ -357,29 +357,15 @@ describe('Mazes', () => {
 
   it('throws an error when given a "cellShape" that is incompatible with the "algorithm"', () => {
 
-    const options = incompatibleAlgoAndCellShapeOptions;
-    const options2 = options;
-    options2.algorithm = 'Recursive Backtracker';
-    const options3 = options;
-    options3.algorithm = 'Growing Tree';
-    const options4 = options;
-    options4.algorithm = 'Prims';
-
-    return Promise.all([
-      postMazeWithErrors(options),
-      postMazeWithErrors(options2),
-      postMazeWithErrors(options3),
-      postMazeWithErrors(options4),
-    ])
-      .then(results => {
-        console.log(results);
-        expect(results[0]).toBeDefined();
-        expect(results[1]).toBeDefined();
-        expect(results[2]).toBeDefined();
-        expect(results[3]).toBeDefined();
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(incompatibleAlgoAndCellShapeOptions)
+      .expect(500)
+      .then(({ error }) => {
+        expect(error).toBeDefined();
       });
   });
-
 
   it('throws an error when the provided dimensions are too small', () => {
 

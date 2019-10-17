@@ -73,7 +73,8 @@ describe('Mazes', () => {
           solutionPath: expect.any(Array),
           connectivity: expect.any(Number),
           averagePathLength: expect.any(Number),
-          solutionLength: expect.any(Number)
+          solutionLength: expect.any(Number),
+          displayString: expect.any(String)
         },
         `
         Object {
@@ -88,6 +89,7 @@ describe('Mazes', () => {
             "height": 3,
             "width": 3,
           },
+          "displayString": Any<String>,
           "end": Any<Object>,
           "solutionLength": Any<Number>,
           "solutionPath": Any<Array>,
@@ -161,7 +163,9 @@ describe('Mazes', () => {
       postMaze(validHexOptions)
     ]).then(() => {
       return request
-        .get(`/api/mazes?solutionLength_lt=10&solutionLength_gt=1&connectivity_lt=1000`)
+        .get(
+          `/api/mazes?solutionLength_lt=10&solutionLength_gt=1&connectivity_lt=1000`
+        )
         .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {
@@ -235,7 +239,8 @@ describe('Mazes', () => {
               solutionPath: expect.any(Array),
               connectivity: expect.any(Number),
               averagePathLength: expect.any(Number),
-              solutionLength: expect.any(Number)
+              solutionLength: expect.any(Number),
+              displayString: expect.any(String)
             },
             `
             Object {
@@ -250,6 +255,7 @@ describe('Mazes', () => {
                 "height": 3,
                 "width": 3,
               },
+              "displayString": Any<String>,
               "end": Any<Object>,
               "solutionLength": Any<Number>,
               "solutionPath": Any<Array>,
@@ -424,5 +430,4 @@ describe('Mazes', () => {
         expect(results[3]).toBeDefined();
       });
   });
-
 });

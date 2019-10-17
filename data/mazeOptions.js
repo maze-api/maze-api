@@ -85,7 +85,7 @@ const invalidEndPointOptions = {
 
 const incompatibleAlgoAndCellShapeOptions = {
   cellShape: 'Hexagonal',
-  algorithm: 'Woven',
+  algorithm: '  ',
   dimensions: { height: 3, width: 3 },
   start: { x: 1, y: 1 },
   end: { x: 1, y: 1 }

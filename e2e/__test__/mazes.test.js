@@ -174,6 +174,22 @@ describe('Mazes', () => {
     });
   });
 
+  it.only('get mazes with query for Algorithm', () => {
+    return Promise.all([
+      postMaze(validHexOptions3),
+      postMaze(validHexOptions3),
+      postMaze(validHexOptions3)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes?algorithm=Growing Tree`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].solutionLength).toBeGreaterThan(1);
+        });
+    });
+  });
+
   it('gets 10 mazes from a default query - even when there are more mazes in the DB', () => {
     return Promise.all([
       postMaze(validHexOptions),

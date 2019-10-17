@@ -4,6 +4,7 @@ const { signupUser } = require('../data-helpers');
 const {
   validHexOptions,
   validSquareOptions,
+  validSquareOptions2,
   invalidEndCoordOptions,
   invalidEndPointOptions,
   castErrorOptions
@@ -118,7 +119,7 @@ describe('Mazes', () => {
       postMaze(validHexOptions),
       postMaze(validHexOptions),
       postMaze(validHexOptions),
-      postMaze(validSquareOptions),
+      postMaze(validSquareOptions2),
       postMaze(validSquareOptions),
       postMaze(validSquareOptions),
       postMaze(validSquareOptions),

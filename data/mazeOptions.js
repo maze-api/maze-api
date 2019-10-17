@@ -7,13 +7,19 @@ const validHexOptions = {
 };
 const validSquareOptions = {
   cellShape: 'Square',
-  algorithm: 'Recursive Backtracker',
+  algorithm: 'Prims',
+  dimensions: { height: 3, width: 3 },
+  start: { x: 1, y: 1 },
+};
+const validSquareOptions2 = {
+  cellShape: 'Square',
+  algorithm: 'Woven',
   dimensions: { height: 3, width: 3 },
   start: { x: 1, y: 1 },
 };
 const invalidEndCoordOptions = {
   cellShape: 'Square',
-  algorithm: 'Recursive Backtracker',
+  algorithm: 'Woven',
   dimensions: { height: 3, width: 3 },
   start: { x: 1, y: 1 },
   end: { x: 1 }
@@ -21,7 +27,7 @@ const invalidEndCoordOptions = {
 
 const invalidEndPointOptions = {
   cellShape: 'Square',
-  algorithm: 'Recursive Backtracker',
+  algorithm: 'Growing Tree',
   dimensions: { height: 3, width: 3 },
   start: { x: 1, y: 1 },
   end: { x: 1, y: 9 }
@@ -37,6 +43,7 @@ const castErrorOptions = {
 module.exports = {
   validHexOptions,
   validSquareOptions,
+  validSquareOptions2,
   invalidEndCoordOptions,
   invalidEndPointOptions,
   castErrorOptions

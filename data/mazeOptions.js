@@ -27,7 +27,7 @@ const validSquareOptions = {
 const validSquareOptions2 = {
   cellShape: 'Square',
   algorithm: 'Woven',
-  dimensions: { height: 3, width: 3 },
+  dimensions: { height: 15, width: 15 },
   start: { x: 1, y: 1 },
 };
 const validSquareOptions3 = {

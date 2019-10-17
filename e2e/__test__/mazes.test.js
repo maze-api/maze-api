@@ -174,7 +174,7 @@ describe('Mazes', () => {
     });
   });
 
-  it('get mazes with query for Algorithm', () => {
+  it('get mazes with query for algorithm with space', () => {
     return Promise.all([
       postMaze(validHexOptions3),
       postMaze(validHexOptions3),
@@ -182,6 +182,22 @@ describe('Mazes', () => {
     ]).then(() => {
       return request
         .get(`/api/mazes?algorithm=Growing Tree`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].solutionLength).toBeGreaterThan(1);
+        });
+    });
+  });
+
+  it('get mazes with query for algorithm with +', () => {
+    return Promise.all([
+      postMaze(validHexOptions3),
+      postMaze(validHexOptions3),
+      postMaze(validHexOptions3)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes?algorithm=Growing+Tree`)
         .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {

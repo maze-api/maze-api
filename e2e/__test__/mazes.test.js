@@ -176,6 +176,24 @@ describe('Mazes', () => {
     });
   });
 
+  it('gets mazes from a query for height and width', () => {
+    return Promise.all([
+      postMaze(validHexOptions),
+      postMaze(validHexOptions),
+      postMaze(validSquareOptions2)
+    ]).then(() => {
+      return request
+        .get(
+          `/api/mazes?height=15`
+        )
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.length).toBe(1);
+        });
+    });
+  });
+
   it('get mazes with query for algorithm with space', () => {
     return Promise.all([
       postMaze(validHexOptions3),
@@ -318,7 +336,6 @@ describe('Mazes', () => {
       postMazeWithErrors(options3),
       postMazeWithErrors(options4)
     ]).then(results => {
-      console.log(results);
       expect(results[0]).toBeDefined();
       expect(results[1]).toBeDefined();
       expect(results[2]).toBeDefined();
@@ -341,7 +358,6 @@ describe('Mazes', () => {
       postMazeWithErrors(options3),
       postMazeWithErrors(options4)
     ]).then(results => {
-      console.log(results);
       expect(results[0]).toBeDefined();
       expect(results[1]).toBeDefined();
       expect(results[2]).toBeDefined();
@@ -364,7 +380,6 @@ describe('Mazes', () => {
       postMazeWithErrors(options3),
       postMazeWithErrors(options4)
     ]).then(results => {
-      console.log(results);
       expect(results[0]).toBeDefined();
       expect(results[1]).toBeDefined();
       expect(results[2]).toBeDefined();
@@ -409,7 +424,6 @@ describe('Mazes', () => {
       postMazeWithErrors(options3),
       postMazeWithErrors(options4)
     ]).then(results => {
-      console.log(results);
       expect(results[0]).toBeDefined();
       expect(results[1]).toBeDefined();
       expect(results[2]).toBeDefined();
@@ -432,7 +446,6 @@ describe('Mazes', () => {
       postMazeWithErrors(options3),
       postMazeWithErrors(options4)
     ]).then(results => {
-      console.log(results);
       expect(results[0]).toBeDefined();
       expect(results[1]).toBeDefined();
       expect(results[2]).toBeDefined();

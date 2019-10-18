@@ -3,9 +3,18 @@ const db = require('../db');
 const { signupUser } = require('../data-helpers');
 const {
   validHexOptions,
+  validHexOptions2,
+  validHexOptions3,
   validSquareOptions,
+  validSquareOptions2,
+  validSquareOptions3,
+  validSquareOptions4,
+  tooSmallDimensionsOptions,
+  invalidStartPointOptions,
+  duplicateStartAndEndOptions,
   invalidEndCoordOptions,
   invalidEndPointOptions,
+  incompatibleAlgoAndCellShapeOptions,
   castErrorOptions
 } = require('../../data/mazeOptions');
 
@@ -42,6 +51,16 @@ describe('Mazes', () => {
       });
   }
 
+  function postMazeWithErrors(options) {
+    return request
+      .post('/api/mazes')
+      .set('Authorization', testUserKey)
+      .send(options)
+      .then(({ error }) => {
+        return error;
+      });
+  }
+
   it('can post a single valid maze', () => {
     return postMaze(validHexOptions).then(body => {
       expect(body).toMatchInlineSnapshot(
@@ -54,7 +73,9 @@ describe('Mazes', () => {
           solutionPath: expect.any(Array),
           connectivity: expect.any(Number),
           averagePathLength: expect.any(Number),
-          solutionLength: expect.any(Number)
+          solutionLength: expect.any(Number),
+          displayString: expect.any(String),
+          displayStringWithSolutionPath: expect.any(String)
         },
         `
         Object {
@@ -69,6 +90,8 @@ describe('Mazes', () => {
             "height": 3,
             "width": 3,
           },
+          "displayString": Any<String>,
+          "displayStringWithSolutionPath": Any<String>,
           "end": Any<Object>,
           "solutionLength": Any<Number>,
           "solutionPath": Any<Array>,
@@ -79,7 +102,7 @@ describe('Mazes', () => {
     });
   });
 
-  it('impossible to get an invalid maze', () => {
+  it('gets a valid maze with default options if nothing is supplied', () => {
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)
@@ -87,7 +110,7 @@ describe('Mazes', () => {
       .expect(200);
   });
 
-  it('get mazes returns list of mazes', () => {
+  it('returns a list of mazes', () => {
     const expectedDimensions = {
       height: 3,
       width: 3
@@ -95,8 +118,8 @@ describe('Mazes', () => {
 
     return Promise.all([
       postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions)
+      postMaze(validHexOptions2),
+      postMaze(validHexOptions3)
     ]).then(() => {
       return request
         .get('/api/mazes')
@@ -111,19 +134,19 @@ describe('Mazes', () => {
     });
   });
 
-  it('get mazes with query for cellShape', () => {
+  it('gets mazes from a query for "square" cellShapes', () => {
     return Promise.all([
       postMaze(validHexOptions),
+      postMaze(validHexOptions2),
+      postMaze(validHexOptions3),
       postMaze(validHexOptions),
       postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
+      postMaze(validSquareOptions2),
       postMaze(validSquareOptions),
-      postMaze(validSquareOptions),
-      postMaze(validSquareOptions),
-      postMaze(validSquareOptions),
-      postMaze(validSquareOptions),
-      postMaze(validSquareOptions)
+      postMaze(validSquareOptions3),
+      postMaze(validSquareOptions4),
+      postMaze(validSquareOptions3),
+      postMaze(validSquareOptions4)
     ]).then(() => {
       return request
         .get(`/api/mazes?cellShape=Square`)
@@ -135,14 +158,16 @@ describe('Mazes', () => {
     });
   });
 
-  it('get mazes with query for solutionLength and connectivity with operators', () => {
+  it('gets mazes from a query for solutionLength and connectivity', () => {
     return Promise.all([
       postMaze(validHexOptions),
       postMaze(validHexOptions),
       postMaze(validHexOptions)
     ]).then(() => {
       return request
-        .get(`/api/mazes?solutionLength_lt=10&solutionLength_gt=1&connectivity_lt=1000`)
+        .get(
+          `/api/mazes?solutionLength_lt=10&solutionLength_gt=1&connectivity_lt=1000`
+        )
         .set('Authorization', testUserKey)
         .expect(200)
         .then(({ body }) => {
@@ -151,7 +176,39 @@ describe('Mazes', () => {
     });
   });
 
-  it('get 10 mazes with query by default', () => {
+  it('get mazes with query for algorithm with space', () => {
+    return Promise.all([
+      postMaze(validHexOptions3),
+      postMaze(validHexOptions3),
+      postMaze(validHexOptions3)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes?algorithm=Growing Tree`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].solutionLength).toBeGreaterThan(1);
+        });
+    });
+  });
+
+  it('get mazes with query for algorithm with +', () => {
+    return Promise.all([
+      postMaze(validHexOptions3),
+      postMaze(validHexOptions3),
+      postMaze(validHexOptions3)
+    ]).then(() => {
+      return request
+        .get(`/api/mazes?algorithm=Growing+Tree&solutionLength_lt=100`)
+        .set('Authorization', testUserKey)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].solutionLength).toBeGreaterThan(1);
+        });
+    });
+  });
+
+  it('gets 10 mazes from a default query - even when there are more mazes in the DB', () => {
     return Promise.all([
       postMaze(validHexOptions),
       postMaze(validHexOptions),
@@ -175,19 +232,19 @@ describe('Mazes', () => {
     });
   });
 
-  it('gets 5 mazes with query.number', () => {
+  it('gets 5 mazes from a query with number="5"', () => {
     return Promise.all([
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions),
-      postMaze(validHexOptions)
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2),
+      postMaze(validSquareOptions2)
     ]).then(() => {
       return request
         .get(`/api/mazes?number=5`)
@@ -216,7 +273,9 @@ describe('Mazes', () => {
               solutionPath: expect.any(Array),
               connectivity: expect.any(Number),
               averagePathLength: expect.any(Number),
-              solutionLength: expect.any(Number)
+              solutionLength: expect.any(Number),
+              displayString: expect.any(String),
+              displayStringWithSolutionPath: expect.any(String)
             },
             `
             Object {
@@ -231,6 +290,8 @@ describe('Mazes', () => {
                 "height": 3,
                 "width": 3,
               },
+              "displayString": Any<String>,
+              "displayStringWithSolutionPath": Any<String>,
               "end": Any<Object>,
               "solutionLength": Any<Number>,
               "solutionPath": Any<Array>,
@@ -242,15 +303,73 @@ describe('Mazes', () => {
     });
   });
 
-  it('throws an error when giving incomplete end coordinates', () => {
-    return request
-      .post('/api/mazes')
-      .set('Authorization', testUserKey)
-      .send(invalidEndCoordOptions)
-      .expect(500)
-      .then(({ error }) => {
-        expect(error).toBeDefined();
-      });
+  it('throws an error when the provided start coordinates are larger than maze dimensions', () => {
+    const options = invalidStartPointOptions;
+    const options2 = options;
+    options2.algorithm = 'Woven';
+    const options3 = options;
+    options3.algorithm = 'Growing Tree';
+    const options4 = options;
+    options4.algorithm = 'Prims';
+
+    return Promise.all([
+      postMazeWithErrors(options),
+      postMazeWithErrors(options2),
+      postMazeWithErrors(options3),
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
+  });
+
+  it('throws an error when the provided start and end coordinates are the same', () => {
+    const options = duplicateStartAndEndOptions;
+    const options2 = options;
+    options2.algorithm = 'Woven';
+    const options3 = options;
+    options3.algorithm = 'Growing Tree';
+    const options4 = options;
+    options4.algorithm = 'Prims';
+
+    return Promise.all([
+      postMazeWithErrors(options),
+      postMazeWithErrors(options2),
+      postMazeWithErrors(options3),
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
+  });
+
+  it('throws an error when the provided end coordinates are incomplete', () => {
+    const options = invalidEndCoordOptions;
+    const options2 = options;
+    options2.algorithm = 'Recursive Backtracker';
+    const options3 = options;
+    options3.algorithm = 'Growing Tree';
+    const options4 = options;
+    options4.algorithm = 'Prims';
+
+    return Promise.all([
+      postMazeWithErrors(options),
+      postMazeWithErrors(options2),
+      postMazeWithErrors(options3),
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
   });
 
   it('throws an error when given end coordinates larger than maze', () => {
@@ -264,15 +383,60 @@ describe('Mazes', () => {
       });
   });
 
-  it('throws an error when given end coordinates larger than maze', () => {
+  it('throws an error when given a "cellShape" that is incompatible with the "algorithm"', () => {
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)
-      .send(castErrorOptions)
-      .expect(400)
+      .send(incompatibleAlgoAndCellShapeOptions)
+      .expect(500)
       .then(({ error }) => {
         expect(error).toBeDefined();
       });
   });
 
+  it('throws an error when the provided dimensions are too small', () => {
+    const options = tooSmallDimensionsOptions;
+    const options2 = options;
+    options2.algorithm = 'Woven';
+    const options3 = options;
+    options3.algorithm = 'Growing Tree';
+    const options4 = options;
+    options4.algorithm = 'Prims';
+
+    return Promise.all([
+      postMazeWithErrors(options),
+      postMazeWithErrors(options2),
+      postMazeWithErrors(options3),
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
+  });
+
+  it('throws an error when given options in wrong data format', () => {
+    const options = castErrorOptions;
+    const options2 = options;
+    options2.algorithm = 'Woven';
+    const options3 = options;
+    options3.algorithm = 'Growing Tree';
+    const options4 = options;
+    options4.algorithm = 'Prims';
+
+    return Promise.all([
+      postMazeWithErrors(options),
+      postMazeWithErrors(options2),
+      postMazeWithErrors(options3),
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
+  });
 });

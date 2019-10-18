@@ -74,7 +74,8 @@ describe('Mazes', () => {
           connectivity: expect.any(Number),
           averagePathLength: expect.any(Number),
           solutionLength: expect.any(Number),
-          displayString: expect.any(String)
+          displayString: expect.any(String),
+          displayStringWithSolutionPath: expect.any(String)
         },
         `
         Object {
@@ -90,6 +91,7 @@ describe('Mazes', () => {
             "width": 3,
           },
           "displayString": Any<String>,
+          "displayStringWithSolutionPath": Any<String>,
           "end": Any<Object>,
           "solutionLength": Any<Number>,
           "solutionPath": Any<Array>,
@@ -272,7 +274,8 @@ describe('Mazes', () => {
               connectivity: expect.any(Number),
               averagePathLength: expect.any(Number),
               solutionLength: expect.any(Number),
-              displayString: expect.any(String)
+              displayString: expect.any(String),
+              displayStringWithSolutionPath: expect.any(String)
             },
             `
             Object {
@@ -288,6 +291,7 @@ describe('Mazes', () => {
                 "width": 3,
               },
               "displayString": Any<String>,
+              "displayStringWithSolutionPath": Any<String>,
               "end": Any<Object>,
               "solutionLength": Any<Number>,
               "solutionPath": Any<Array>,
@@ -300,7 +304,6 @@ describe('Mazes', () => {
   });
 
   it('throws an error when the provided start coordinates are larger than maze dimensions', () => {
-
     const options = invalidStartPointOptions;
     const options2 = options;
     options2.algorithm = 'Woven';
@@ -313,20 +316,17 @@ describe('Mazes', () => {
       postMazeWithErrors(options),
       postMazeWithErrors(options2),
       postMazeWithErrors(options3),
-      postMazeWithErrors(options4),
-    ])
-      .then(results => {
-        console.log(results);
-        expect(results[0]).toBeDefined();
-        expect(results[1]).toBeDefined();
-        expect(results[2]).toBeDefined();
-        expect(results[3]).toBeDefined();
-      });
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
   });
 
   it('throws an error when the provided start and end coordinates are the same', () => {
-
-
     const options = duplicateStartAndEndOptions;
     const options2 = options;
     options2.algorithm = 'Woven';
@@ -339,19 +339,17 @@ describe('Mazes', () => {
       postMazeWithErrors(options),
       postMazeWithErrors(options2),
       postMazeWithErrors(options3),
-      postMazeWithErrors(options4),
-    ])
-      .then(results => {
-        console.log(results);
-        expect(results[0]).toBeDefined();
-        expect(results[1]).toBeDefined();
-        expect(results[2]).toBeDefined();
-        expect(results[3]).toBeDefined();
-      });
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
   });
 
   it('throws an error when the provided end coordinates are incomplete', () => {
-
     const options = invalidEndCoordOptions;
     const options2 = options;
     options2.algorithm = 'Recursive Backtracker';
@@ -364,17 +362,15 @@ describe('Mazes', () => {
       postMazeWithErrors(options),
       postMazeWithErrors(options2),
       postMazeWithErrors(options3),
-      postMazeWithErrors(options4),
-    ])
-      .then(results => {
-        console.log(results);
-        expect(results[0]).toBeDefined();
-        expect(results[1]).toBeDefined();
-        expect(results[2]).toBeDefined();
-        expect(results[3]).toBeDefined();
-      });
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
   });
-
 
   it('throws an error when given end coordinates larger than maze', () => {
     return request
@@ -388,7 +384,6 @@ describe('Mazes', () => {
   });
 
   it('throws an error when given a "cellShape" that is incompatible with the "algorithm"', () => {
-
     return request
       .post('/api/mazes')
       .set('Authorization', testUserKey)
@@ -400,7 +395,6 @@ describe('Mazes', () => {
   });
 
   it('throws an error when the provided dimensions are too small', () => {
-
     const options = tooSmallDimensionsOptions;
     const options2 = options;
     options2.algorithm = 'Woven';
@@ -413,17 +407,15 @@ describe('Mazes', () => {
       postMazeWithErrors(options),
       postMazeWithErrors(options2),
       postMazeWithErrors(options3),
-      postMazeWithErrors(options4),
-    ])
-      .then(results => {
-        console.log(results);
-        expect(results[0]).toBeDefined();
-        expect(results[1]).toBeDefined();
-        expect(results[2]).toBeDefined();
-        expect(results[3]).toBeDefined();
-      });
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
   });
-
 
   it('throws an error when given options in wrong data format', () => {
     const options = castErrorOptions;
@@ -438,14 +430,13 @@ describe('Mazes', () => {
       postMazeWithErrors(options),
       postMazeWithErrors(options2),
       postMazeWithErrors(options3),
-      postMazeWithErrors(options4),
-    ])
-      .then(results => {
-        console.log(results);
-        expect(results[0]).toBeDefined();
-        expect(results[1]).toBeDefined();
-        expect(results[2]).toBeDefined();
-        expect(results[3]).toBeDefined();
-      });
+      postMazeWithErrors(options4)
+    ]).then(results => {
+      console.log(results);
+      expect(results[0]).toBeDefined();
+      expect(results[1]).toBeDefined();
+      expect(results[2]).toBeDefined();
+      expect(results[3]).toBeDefined();
+    });
   });
 });

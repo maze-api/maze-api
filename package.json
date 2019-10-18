@@ -9,11 +9,11 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "jest": "jest --runInBand --verbose",
-    "test": "npm run jest -- --coverage",
-    "test:coverage": "npm run test -- --coverage",
+    "jest": "jest --runInBand",
+    "test": "npm run jest -- --verbose --coverage",
     "test:watch": "npm run jest -- --watchAll",
     "test:verbose": "npm run test -- --verbose",
+    "test:coverage": "npm run test -- --coverage",
     "start": "node server.js",
     "start:watch": "nodemon server.js"
   },
@@ -22,14 +22,15 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "chalk": "^2.4.2",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.1",
     "morgan": "^1.9.1"
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.1.1",
+    "@types/jest": "^24.0.18",
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
     "nodemon": "^1.19.2",

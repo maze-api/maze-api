@@ -1,5 +1,5 @@
-const { HexesMaze } = require('./lib/maze-classes/HexesMaze');
-// const { SquaresMaze } = require('./lib/maze-classes/SquaresMaze');
+// const { HexesMaze } = require('./lib/maze-classes/HexesMaze');
+const { SquaresMaze } = require('./lib/maze-classes/SquaresMaze');
 
 
 let options1 = {
@@ -8,14 +8,14 @@ let options1 = {
   startX: 1,
   startY: 1,
 };
-options1.algorithm = 'Recursive Backtracker';
+// options1.algorithm = 'Recursive Backtracker';
 // options1.algorithm = 'Growing Tree';
 // options1.algorithm = 'Prims';
-// options1.algorithm = 'Woven';
-// let maze1 = new SquaresMaze(options1);
-let maze1 = new HexesMaze(options1);
+options1.algorithm = 'Woven';
+let maze1 = new SquaresMaze(options1);
+// let maze1 = new HexesMaze(options1);
 console.log(maze1.printCells());
-console.log(maze1.printCells(false));
+console.log(maze1.printCells(true));
 
 // let maze3 = new SquaresMaze(options1);
 // // console.log(maze1.exportMazeModel());

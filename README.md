@@ -28,8 +28,3 @@ Maze API is a RESTful API that generates a variety of mazes from a selection of 
     
   * Fun stats.
   * Ability to get really big mazes. 
-  
-
-
-
-# php-api-practice
